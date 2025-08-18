@@ -1,0 +1,35 @@
+#! /usr/bin/env bash
+
+# SCRIPT_DIR is set to the directory where this script is localed. It it was
+# run by a symlink, it will be resolved to the directory of the target script
+# (that is, the actual script directory).
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+if [[ -L "${BASH_SOURCE[0]}" ]]; then
+    SCRIPT_DIR="$(readlink "${BASH_SOURCE[0]}")"
+    SCRIPT_DIR="$( cd "$( dirname "${SCRIPT_DIR}" )" >/dev/null 2>&1 && pwd )"
+fi
+
+# on no argument, -h, or --help, print usage 
+if [[ "$#" -eq 0 ]] || [[ "$#" -eq 1 && ( "$1" == "-h" || "$1" == "--help" ) ]]; then
+    echo "Usage: work-notes <notes-path-prefix>"
+    echo "  - This script will open the 'notes.md' file in the specified notes directory"
+    echo "    in the system editor."
+    echo "  - You can provide just the first few characters of the notes directory name."
+    echo "  - You can also include the file name, in case it's not 'notes.md'." 
+    echo "  - Meant to be added to the PATH (by a symlink)."
+    exit 0  
+fi
+
+# look for first folder which matches the names (that is, support incomplete names)
+STOW_DIR="${SCRIPT_DIR}/base"
+MAX_DEPTH=4
+NOTES_FILE="$(find ${STOW_DIR} -maxdepth "${MAX_DEPTH}" -mindepth 1 -type f -not -path '*/\.*' | sort | grep "^${STOW_DIR}/$1" | head -n 1)"
+
+if [[ ! "$NOTES_FILE" ]]; then
+    echo "Error: no notes file found matching '$1'."
+    exit 1
+fi
+
+# open the notes file in the system editor
+EDITOR="${EDITOR:-vim}"
+$EDITOR "$NOTES_FILE"

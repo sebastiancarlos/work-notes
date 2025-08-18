@@ -1,0 +1,35 @@
+#! /usr/bin/env bash
+
+SCRIPT_DIR="$(command cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && command pwd )"
+if [[ -L "${BASH_SOURCE[0]}" ]]; then
+    SCRIPT_DIR="$(readlink "${BASH_SOURCE[0]}")"
+    SCRIPT_DIR="$(command cd "$( dirname "${SCRIPT_DIR}" )" >/dev/null 2>&1 && command pwd )"
+fi
+
+# Customize this if installing somewhere else
+TARGET="${HOME}/work"
+
+green="\033[0;32m"
+purple="\033[0;35m"
+blue="\033[0;34m"
+red="\033[0;31m"
+reset="\033[0m"
+
+# exit if GNU Stow is not installed
+if ! command -v stow &> /dev/null; then
+  echo -e "${red}GNU stow is not installed${reset}"
+  echo -e "Please install ${blue}GNU stow${reset} before continuing."
+  exit 1
+fi
+echo -e "${blue}GNU stow${green} is installed${reset}"
+
+# move to the stow directory
+cd "${SCRIPT_DIR}" > /dev/null 
+
+install_command="stow --verbose --verbose --restow --target="${TARGET}" base"
+echo -e "${green}Installing work notes with: ${purple}${install_command}${reset}"
+
+# prepend [stow] to the stderr output, and redirect it to stderr
+${install_command} 2> >(sed 's/^/[stow] /' >&2)
+
+echo -e "${green}Installation complete${reset}"

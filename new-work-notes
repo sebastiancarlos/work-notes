@@ -1,0 +1,73 @@
+#! /usr/bin/env bash
+
+# Set SCRIPT_DIR to the directory where this script is localed. If being run by
+# a symlink, it will be resolved to the directory of the target script (that
+# is, the actual script directory).
+SCRIPT_DIR="$(command cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && command pwd )"
+if [[ -L "${BASH_SOURCE[0]}" ]]; then
+    SCRIPT_DIR="$(readlink "${BASH_SOURCE[0]}")"
+    SCRIPT_DIR="$(command cd "$( dirname "${SCRIPT_DIR}" )" >/dev/null 2>&1 && command pwd )"
+fi
+
+STOW_PACKAGE_DIR="base"
+STOW_PACKAGE_DIR_ABSOLUTE="${SCRIPT_DIR}/${STOW_PACKAGE_DIR}"
+
+# show usage if argument is missing, or if -h/--help is passed
+if [[ $# != 1 || "$1" == "-h" || "$1" == "--help" ]]; then
+  echo "Usage: new-work-notes <path>"
+  echo ""
+  echo "Creates a new file in the specified path (within the stow directory)."
+  echo "- If the path is a folder, it creates 'notes.md' in that folder."
+  echo "- If the path is a file, it the file and its parent folders."
+  echo ""
+  echo " Example: new-note client-a/project-x"
+  echo "          new-note client-b/project-y/meeting-notes.md"
+  exit 1
+fi
+
+path=$(dirname "$1")
+file=$(basename "$1")
+
+# If the path has no extension, assume it's a directory
+if [[ ! "${file}" == *.* ]]; then
+    path=$1
+    file="notes.md"
+fi
+
+# Exclude prefix on path if it matches the STOW_PACKAGE_DIR, which the CLI user
+# might type to help with auto-completion
+if [[ "${path}" == "${STOW_PACKAGE_DIR}"* ]]; then
+    path="${path#${STOW_PACKAGE_DIR}/}"
+fi
+
+final_path="${STOW_PACKAGE_DIR_ABSOLUTE}/${path}/${file}"
+
+# if file and folder exist already, and file is not empty, exit
+if [[ -e "${final_path}" && -s "${final_path}" ]]; then
+  echo "File ${final_path} already exists and is not empty. Exiting."
+  exit 1
+fi
+
+# create folder (if it doesn't exist)
+mkdir -p "${STOW_PACKAGE_DIR_ABSOLUTE}/${path}"
+
+cat > ${final_path} << EOF
+# Notes for "${path}"
+
+## Resources
+- TODO
+
+## People
+- TODO
+
+## Overview
+- TODO
+
+## Meeting Notes
+- TODO
+
+## TODO
+- TODO 
+EOF
+
+echo "Created ${STOW_PACKAGE_DIR}/${path}/${file}"
