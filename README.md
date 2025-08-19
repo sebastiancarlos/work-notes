@@ -2,6 +2,8 @@
 
 This repository contains work-related notes.
 
+<img height="350" alt="image" src="https://github.com/user-attachments/assets/a9638a1a-d4e1-4e23-9f70-35ad83a704f3" />
+
 Its purpose is to:
 - **Keep all work-related notes together** in a single Git repository, and
 - Provide a mechanism to **co-locate them with the actual work directories**,
@@ -20,6 +22,16 @@ Its purpose is to:
 > Lutum · Lutum · Lutum · Lutum · Lutum · Lutum.
 > 
 > *- "Work" by Rihanna (2016), translated to Latin.*
+
+## Is this tool for me?
+
+If you answer "yes" to the following questions, then this tool might be for
+you:
+
+- Do you use the UNIX terminal?
+- Do you want to keep your work-related notes as text files?
+- Do you want to keep them all together under source control?
+- Do you also want to co-locate them with your work directories/repos?
 
 ## Dependencies
 
