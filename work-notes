@@ -43,25 +43,7 @@ if [[ -z "$ALL_FILES" ]]; then
   exit 1
 fi
 
-MATCHES=$(echo "${ALL_FILES}" | grep "^${PREFIX}")
-
-# If a prefix was provided, check if it uniquely matches a single file.
-if [[ -n "$PREFIX" ]]; then
-    MATCH_COUNT=$(echo "${MATCHES}" | wc -l)
-
-    if [[ "${MATCH_COUNT}" -eq 1 ]]; then
-        # If exactly one file matches, select it without launching fzf.
-        NOTES_FILE="${MATCHES}"
-        echo "Found unique match: ${NOTES_FILE}"
-    fi
-fi
-
-# If a unique file wasn't found, launch fzf to let the user choose.
-if [[ -z "$NOTES_FILE" ]]; then
-    # This fzf call is intentionally simple. It respects the user's
-    # system-wide fzf configuration (e.g., from $FZF_DEFAULT_OPTS).
-    NOTES_FILE=$(echo "${ALL_FILES}" | fzf --query="${PREFIX}")
-fi
+NOTES_FILE=$(echo "${ALL_FILES}" | fzf --query="${PREFIX}")
 
 # If NOTES_FILE is empty at this point (user cancelled fzf), exit.
 if [[ -z "$NOTES_FILE" ]]; then
