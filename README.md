@@ -115,6 +115,8 @@ have the following kinds of notes, depending on the work requirements:
 - Add your notes in the corresponding directories.
 - Run `./install` to create the symlinks in the corresponding `~/work`
   directories.
+- Optionally run `make` to install the `work-notes` script to your `$PATH`.
+  (See `Makefile` for details.)
 
 ## Workflow & Scripts
 
