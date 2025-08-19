@@ -2,7 +2,7 @@
 
 This repository contains work-related notes.
 
-<img height="350" alt="image" src="https://github.com/user-attachments/assets/a9638a1a-d4e1-4e23-9f70-35ad83a704f3" />
+<img height="350" alt="venn diagram. left 'dotfiles-style co-location', right 'knowledge-bases', center 'work-notes lives here'" src="https://github.com/user-attachments/assets/a9638a1a-d4e1-4e23-9f70-35ad83a704f3" />
 
 Its purpose is to:
 - **Keep all work-related notes together** in a single Git repository, and
