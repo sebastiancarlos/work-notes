@@ -48,10 +48,15 @@ NOTES_FILE=$(echo "${ALL_FILES}" | fzf --query="${PREFIX}")
 # If NOTES_FILE is empty at this point (user cancelled fzf), exit.
 if [[ -z "$NOTES_FILE" ]]; then
     echo "No file selected."
-    exit 0
+    exit 1
 fi
 
 # Open the selected file in the system editor.
 EDITOR="${EDITOR:-vim}"
 echo "Opening ${NOTES_FILE}..."
-$EDITOR "$NOTES_FILE"
+final_command="${EDITOR} ${NOTES_FILE}"
+${final_command}
+
+# print the final command to a file, in case a wrapper script wants to add it
+# to the history
+echo "${final_command}" >| /tmp/work-notes-last-command.txt
