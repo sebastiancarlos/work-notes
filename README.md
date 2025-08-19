@@ -1,4 +1,4 @@
-# `work-notes`: A *"Dotfiles Manager"* For Work-Related Notes
+# 💪📜 `work-notes`: A *"Dotfiles Manager"* For Work-Related Notes
 
 This repository contains work-related notes.
 
