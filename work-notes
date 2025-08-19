@@ -1,6 +1,6 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
-# SCRIPT_DIR is set to the directory where this script is localed. It it was
+# SCRIPT_DIR is set to the directory where this script is located. If it was
 # run by a symlink, it will be resolved to the directory of the target script
 # (that is, the actual script directory).
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -9,27 +9,67 @@ if [[ -L "${BASH_SOURCE[0]}" ]]; then
     SCRIPT_DIR="$( cd "$( dirname "${SCRIPT_DIR}" )" >/dev/null 2>&1 && pwd )"
 fi
 
-# on no argument, -h, or --help, print usage 
-if [[ "$#" -eq 0 ]] || [[ "$#" -eq 1 && ( "$1" == "-h" || "$1" == "--help" ) ]]; then
-    echo "Usage: work-notes <notes-path-prefix>"
-    echo "  - This script will open the 'notes.md' file in the specified notes directory"
-    echo "    in the system editor."
-    echo "  - You can provide just the first few characters of the notes directory name."
-    echo "  - You can also include the file name, in case it's not 'notes.md'." 
-    echo "  - Meant to be added to the PATH (by a symlink)."
-    exit 0  
+# on -h, or --help, print usage
+if [[ "$#" -eq 1 && ( "$1" == "-h" || "$1" == "--help" ) ]]; then
+    echo "Usage: work-notes [notes-path-prefix]"
+    echo ""
+    echo "Finds and opens a note file using fzf."
+    echo " - Runs an fzf search scoped to the notes directory."
+    echo " - If a prefix is provided, it's used as the initial fzf query."
+    echo " - If the prefix matches exactly one file, it opens it directly."
+    exit 0
 fi
 
-# look for first folder which matches the names (that is, support incomplete names)
+# Exit if fzf is not installed
+if ! command -v fzf &> /dev/null; then
+  echo "Error: fzf is not installed."
+  echo "Please install fzf to use this command."
+  exit 1
+fi
+
 STOW_DIR="${SCRIPT_DIR}/base"
-MAX_DEPTH=4
-NOTES_FILE="$(find ${STOW_DIR} -maxdepth "${MAX_DEPTH}" -mindepth 1 -type f -not -path '*/\.*' | sort | grep "^${STOW_DIR}/$1" | head -n 1)"
+cd "${STOW_DIR}" || { echo "Error: Notes directory not found at ${STOW_DIR}"; exit 1; }
 
-if [[ ! "$NOTES_FILE" ]]; then
-    echo "Error: no notes file found matching '$1'."
-    exit 1
+# Get the prefix from the first argument (it can be empty)
+PREFIX="$1"
+NOTES_FILE=""
+
+# Find all files, excluding dotfiles, and clean up the './' prefix from find.
+ALL_FILES=$(find . -type f -not -path '*/\.*' | sed 's/^\.\///' | sort)
+
+if [[ -z "$ALL_FILES" ]]; then
+  echo "No note files found in '${STOW_DIR}'."
+  echo "Create a new note first using the 'new-work-notes' command."
+  exit 1
 fi
 
-# open the notes file in the system editor
+MATCHES=$(echo "${ALL_FILES}" | grep "^${PREFIX}")
+
+# If a prefix was provided, check if it uniquely matches a single file.
+if [[ -n "$PREFIX" ]]; then
+    MATCH_COUNT=$(echo "${MATCHES}" | wc -l)
+
+    if [[ "${MATCH_COUNT}" -eq 1 ]]; then
+        # If exactly one file matches, select it without launching fzf.
+        NOTES_FILE="${MATCHES}"
+        echo "Found unique match: ${NOTES_FILE}"
+    fi
+fi
+
+# If a unique file wasn't found, launch fzf to let the user choose.
+if [[ -z "$NOTES_FILE" ]]; then
+    # This fzf call is intentionally simple. It respects the user's
+    # system-wide fzf configuration (e.g., from $FZF_DEFAULT_OPTS).
+    NOTES_FILE=$(echo "${ALL_FILES}" | fzf --query="${PREFIX}")
+fi
+
+# If NOTES_FILE is empty at this point (user cancelled fzf), exit.
+if [[ -z "$NOTES_FILE" ]]; then
+    echo "No file selected."
+    exit 0
+fi
+
+# Open the selected file in the system editor.
 EDITOR="${EDITOR:-vim}"
+echo "Opening ${NOTES_FILE}..."
 $EDITOR "$NOTES_FILE"

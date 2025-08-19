@@ -23,7 +23,10 @@ Its purpose is to:
 
 ## Dependencies
 
-Bash and [GNU Stow](https://www.gnu.org/software/stow/).
+- Bash,
+- [GNU Stow](https://www.gnu.org/software/stow/), and
+- [fzf](https://github.com/junegunn/fzf) (optional, only for the `work-notes`
+  script).
 
 ## Overview
 
@@ -143,8 +146,9 @@ intended before linking it.
 
 ### `work-notes <prefix>`
 
-Finds and opens the first note file matching the given path prefix in
-`$EDITOR`. It supports partial path matching.
+Launches an `fzf` fuzzy-finder TUI scoped to your notes directory (`./base`).
+If an optional `[prefix]` is provided, it's used as the initial search query.
+It opens it in your default `$EDITOR`.
 
 ```bash
 # Finds and opens base/client-x/project-y/notes.md
