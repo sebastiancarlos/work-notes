@@ -54,7 +54,8 @@ fi
 # Open the selected file in the system editor.
 EDITOR="${EDITOR:-vim}"
 echo "Opening ${NOTES_FILE}..."
-final_command="${EDITOR} ${NOTES_FILE}"
+ABSOLUTE_NOTES_FILE="${STOW_DIR}/${NOTES_FILE}"
+final_command="${EDITOR} ${ABSOLUTE_NOTES_FILE}"
 ${final_command}
 
 # print the final command to a file, in case a wrapper script wants to add it
