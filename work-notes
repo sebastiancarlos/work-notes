@@ -30,8 +30,8 @@ fi
 STOW_DIR="${SCRIPT_DIR}/base"
 cd "${STOW_DIR}" || { echo "Error: Notes directory not found at ${STOW_DIR}"; exit 1; }
 
-# Get the prefix from the first argument (it can be empty)
-PREFIX="$1"
+# Get the fzf prefix from the arguments (it can be empty)
+PREFIX="$@"
 NOTES_FILE=""
 
 # Find all files, excluding dotfiles, and clean up the './' prefix from find.
