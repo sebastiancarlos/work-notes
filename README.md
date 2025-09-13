@@ -88,6 +88,7 @@ the target `~/work`.
 │       │   └── notes.md
 │       └── notes.md
 ├── install*
+├── uninstall*
 ├── new-work-notes*
 └── work-notes*
 ```
@@ -137,6 +138,11 @@ have the following kinds of notes, depending on the work requirements:
 This script runs `stow base` to create or update the symlinks in the `~/work`
 directory. Run it after adding new note files to create the corresponding
 symlinks.
+
+### `install`
+
+Script to (temporarily?) remove the symlinks created by `install`. Useful if
+you want to have a work directory temporarily clean of your personal notes.
 
 ### `new-work-notes <path>`
 
