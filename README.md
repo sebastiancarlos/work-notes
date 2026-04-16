@@ -124,7 +124,7 @@ have the following kinds of notes, depending on the work requirements:
     it offline, or make it private. And naturally, care must be taken to
     comply with any contractual requirements to purge work-related information
     after your work concludes.
-- Create directories in `base/` matching those of your work directory.
+- Create directories in `./base/` matching those of your work directory.
 - Add your notes in the corresponding directories.
 - Run `./install` to create the symlinks in the corresponding `~/work`
   directories.
@@ -139,7 +139,7 @@ This script runs `stow base` to create or update the symlinks in the `~/work`
 directory. Run it after adding new note files to create the corresponding
 symlinks.
 
-### `install`
+### `uninstall`
 
 Script to (temporarily?) remove the symlinks created by `install`. Useful if
 you want to have a work directory temporarily clean of your personal notes.
@@ -209,6 +209,6 @@ Yes. Just rename it. Everything will keep working fine - the scripts don't
 rely on a specific folder name.
 
 ## Prior art
-- https://dev.to/futurice/how-i-handle-my-notes-with-symbolic-links-594j
+- <https://dev.to/futurice/how-i-handle-my-notes-with-symbolic-links-594j>
 - [Dotfiles Linked To Higher OKRs in Placebo-Controlled
   Study](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
